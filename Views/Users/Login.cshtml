@@ -1,0 +1,17 @@
+﻿@model FMassage.ViewModels.LoginViewModel
+
+<h2>Войти</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post" action="/Users/Login">
+    <div class="mb-3">
+        <label for="email" class="form-label">Электронная почта:</label>
+        <input type="email" class="form-control" id="email" name="Email" value="@Model?.Email" />
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Пароль:</label>
+        <input type="password" class="form-control" id="password" name="Password" />
+    </div>
+    <button type="submit" class="btn btn-primary">Войти</button>
+</form>
+<p><a href="@Url.Action("Register", "Users")">Зарегистрируйтесь</a></p>

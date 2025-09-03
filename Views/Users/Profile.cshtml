@@ -1,0 +1,20 @@
+﻿@model FMassage.Models.User
+
+<h2>Профиль пользователя</h2>
+
+<div class="alert alert-info">
+    Привет, @Model.UserName!
+</div>
+
+<!-- Информация о пользователе -->
+<dl class="row">
+    <dt class="col-sm-3">Имя пользователя:</dt>
+    <dd class="col-sm-9">@Model.UserName</dd>
+
+    <dt class="col-sm-3">Адрес электронной почты:</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+
+    <!-- Другие поля пользователя -->
+</dl>
+
+<a href="@Url.Action("ChangePassword", "Users")" class="btn btn-warning">Изменить пароль</a>

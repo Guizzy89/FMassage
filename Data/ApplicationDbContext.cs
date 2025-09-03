@@ -10,15 +10,6 @@ namespace FMassage.Data
             : base(options)
         {
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlite("Data Source=FMassage.db");
-            }
-        }
-
         public DbSet<Massage> Massages { get; set; }
         public DbSet<Booking> Bookings { get; set; }
     }

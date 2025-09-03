@@ -56,11 +56,11 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        <a href="@Url.Action("Logout", "Account")" class="btn btn-outline-primary">Выход</a>
+        <a href="@Url.Action("Logout", "Users")" class="btn btn-outline-primary">Выход</a>
     }
     else
     {
-        <a href="@Url.Action("Login", "Account")" class="btn btn-outline-primary">Вход</a>
+        <a href="@Url.Action("Login", "Users")" class="btn btn-outline-primary">Вход</a>
     }
 </body>
 </html>

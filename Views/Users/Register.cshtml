@@ -1,0 +1,20 @@
+﻿@model FMassage.ViewModels.RegisterViewModel
+
+<h2>Регистрация</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post" action="/Users/Register">
+    <div class="mb-3">
+        <label for="email" class="form-label">Электронная почта:</label>
+        <input type="email" class="form-control" id="email" name="Email" required />
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Пароль:</label>
+        <input type="password" class="form-control" id="password" name="Password" required />
+    </div>
+    <div class="mb-3">
+        <label for="confirm-password" class="form-label">Подтвердите пароль:</label>
+        <input type="password" class="form-control" id="confirm-password" name="ConfirmPassword" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+</form>
