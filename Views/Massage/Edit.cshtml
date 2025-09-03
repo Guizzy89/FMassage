@@ -1,0 +1,35 @@
+﻿@model FMassage.Models.Massage
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Редактирование услуги";
+}
+
+<h2>Редактирование услуги массажа</h2>
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SuccessMessage
+        <br />
+        <a href="@Url.Action("Index", "Massage")" class="btn btn-primary">Вернуться к списку услуг</a>
+    </div>
+}
+else
+{
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3">
+            <label for="Name" class="form-label">Название услуги:</label>
+            <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
+        </div>
+        <div class="mb-3">
+            <label for="Description" class="form-label">Описание услуги:</label>
+            <textarea class="form-control" id="Description" name="Description" rows="3" required>@Model.Description</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="Price" class="form-label">Цена ($):</label>
+            <input type="number" step="0.01" min="0" class="form-control" id="Price" name="Price" value="@Model.Price" required />
+        </div>
+        <button type="submit" class="btn btn-success">Сохранить изменения</button>
+    </form>
+}

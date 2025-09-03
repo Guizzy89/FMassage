@@ -1,0 +1,20 @@
+﻿@model FMassage.Models.Booking
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Редактирование сеанса";
+}
+
+<h2>Редактирование сеанса</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label for="SlotDate" class="form-label">Дата и время сеанса:</label>
+        <input type="datetime-local" class="form-control" id="SlotDate" name="SlotDate" value="@Model.SlotDate.ToString("yyyy-MM-ddTHH:mm:ss")" required />
+    </div>
+    <div class="mb-3">
+        <label for="Duration" class="form-label">Продолжительность сеанса (минуты):</label>
+        <input type="number" class="form-control" id="Duration" name="DurationInMinutes" value="@Model.Duration.TotalMinutes" required />
+    </div>
+    <button type="submit" class="btn btn-success">Сохранить изменения</button>
+</form>

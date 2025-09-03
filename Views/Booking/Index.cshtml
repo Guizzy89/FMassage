@@ -1,0 +1,40 @@
+﻿@model IEnumerable<FMassage.Models.Booking>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Список сеансов массажа";
+}
+
+<h2>Список сеансов массажа</h2>
+
+<p>
+    <a href="@Url.Action("Create", "Booking")" class="btn btn-info mb-3">Добавить новый сеанс</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Дата и время</th>
+            <th>Продолжительность</th>
+            <th>Клиент</th>
+            <th>Телефон</th>
+            <th>Комментарий</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.SlotDate.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.Duration.Minutes мин.</td>
+                <td>@item.ClientName</td>
+                <td>@item.PhoneNumber</td>
+                <td>@item.Comment</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Booking", new { id = item.Id })" class="btn btn-warning">Редактировать</a>
+                    <a href="@Url.Action("Delete", "Booking", new { id = item.Id })" onclick="return confirm('Вы действительно хотите удалить этот сеанс?');" class="btn btn-danger">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

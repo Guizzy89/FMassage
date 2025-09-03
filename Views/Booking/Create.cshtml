@@ -1,0 +1,19 @@
+﻿@model FMassage.Models.Booking
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Добавление нового сеанса";
+}
+
+<h2>Добавление нового сеанса</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label for="SlotDate" class="form-label">Дата и время сеанса:</label>
+        <input type="datetime-local" class="form-control" id="SlotDate" name="SlotDate" required />
+    </div>
+    <div class="mb-3">
+        <label for="Duration" class="form-label">Продолжительность сеанса (минуты):</label>
+        <input type="number" class="form-control" id="Duration" name="DurationInMinutes" required />
+    </div>
+    <button type="submit" class="btn btn-success">Добавить сеанс</button>
+</form>
