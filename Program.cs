@@ -16,25 +16,15 @@ builder.Services.AddDefaultIdentity<User>()
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
-{
-    app.UseHsts(); // Включаем HTTPS Strict Transport Security Policy
-}
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
+// Включаем процессы аутентификации и авторизации
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+// Стандартные middleware
+app.UseStaticFiles();
+app.UseRouting();
 
-app.MapGet("/", () => "Hello World!");
+app.MapDefaultControllerRoute();
 
 app.Run();
