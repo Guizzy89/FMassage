@@ -22,9 +22,10 @@ namespace FMassage.Controllers
         }
 
         // GET: Booking - разный вид для админа и пользователей
+        [AllowAnonymous] // Разрешаем доступ без авторизации
         public async Task<IActionResult> Index()
         {
-            if (User.IsInRole("Admin"))
+            if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
             {
                 // Админ видит ВСЕ брони с информацией о клиентах
                 var allBookings = await _context.Bookings
@@ -32,9 +33,17 @@ namespace FMassage.Controllers
                     .ToListAsync();
                 return View(allBookings);
             }
+            else if (User.Identity.IsAuthenticated)
+            {
+                // Авторизованный пользователь видит только ДОСТУПНЫЕ слоты
+                var availableSlots = await _context.Bookings
+                    .Where(b => b.IsAvailable)
+                    .ToListAsync();
+                return View(availableSlots);
+            }
             else
             {
-                // Обычный пользователь видит только ДОСТУПНЫЕ слоты
+                // Гость видит только ДОСТУПНЫЕ слоты
                 var availableSlots = await _context.Bookings
                     .Where(b => b.IsAvailable)
                     .ToListAsync();
@@ -42,6 +51,7 @@ namespace FMassage.Controllers
             }
         }
 
+        // Остальные методы остаются без изменений...
         // GET: Booking/Create - только для админа
         [Authorize(Policy = "RequireAdminRole")]
         public IActionResult Create()
