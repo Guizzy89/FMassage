@@ -30,8 +30,12 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Добавляем сервисы авторизации
-builder.Services.AddAuthorization();
+// Добавляем сервисы авторизации с политикой для администраторов
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole",
+        policy => policy.RequireRole("Admin"));
+});
 
 var app = builder.Build();
 
