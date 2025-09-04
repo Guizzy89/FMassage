@@ -63,31 +63,53 @@ namespace FMassage.Controllers
         #region Авторизация пользователя
 
         [HttpGet]
-        public IActionResult Login(string returnUrl = null)
+        public IActionResult Login(string? returnUrl = null)
         {
+            // Проверяем, что returnUrl локальный URL для безопасности
+            if (!string.IsNullOrEmpty(returnUrl) && !Url.IsLocalUrl(returnUrl))
+            {
+                returnUrl = null;
+            }
+
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
+            // Проверяем returnUrl на безопасность
+            if (!string.IsNullOrEmpty(returnUrl) && !Url.IsLocalUrl(returnUrl))
+            {
+                returnUrl = null;
+            }
+
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email!, model.Password!, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
-                    if (!string.IsNullOrEmpty(returnUrl))
-                        return LocalRedirect(returnUrl);
-                    else
-                        return RedirectToAction("Index", "Home");
+                    return RedirectToLocal(returnUrl);
                 }
 
                 ModelState.AddModelError("", "Неверный адрес электронной почты или пароль.");
             }
 
+            ViewBag.ReturnUrl = returnUrl;
             return View(model);
+        }
+
+        private IActionResult RedirectToLocal(string? returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         #endregion

@@ -1,8 +1,7 @@
 using FMassage.Data;
 using FMassage.Models;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +10,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=FMassage.db"));
 
 // Регистрация поддержки Asp.Net Core Identity
-builder.Services.AddDefaultIdentity<User>(options =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     // Настройки для совместимости с SQLite
     options.Stores.MaxLengthForKeys = 128;
@@ -22,11 +21,36 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequiredLength = 6;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
-// Включение подробных ошибок
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 var app = builder.Build();
+
+// Создание ролей и назначение администратора
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
+
+    // Создаем стандартные роли, если их нет
+    var roles = new[] { "Admin", "Manager", "User" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    // Назначаем роль первому пользователю как Admin
+    var firstUser = await userManager.FindByEmailAsync("tarkhanovai@yandex.ru");
+    if (firstUser != null && !await userManager.IsInRoleAsync(firstUser, "Admin"))
+    {
+        await userManager.AddToRoleAsync(firstUser, "Admin");
+    }
+}
 
 // Стандартные middleware
 app.UseStaticFiles();
@@ -35,8 +59,6 @@ app.UseRouting();
 // Включаем процессы аутентификации и авторизации
 app.UseAuthentication();
 app.UseAuthorization();
-
-
 
 app.MapDefaultControllerRoute();
 app.MapRazorPages();  // Важно для Identity!
