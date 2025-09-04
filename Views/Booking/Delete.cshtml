@@ -1,12 +1,31 @@
 ﻿@model FMassage.Models.Booking
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Удаление сеанса";
 }
 
+@if (!(await AuthorizationService.AuthorizeAsync(User, "RequireAdminRole")).Succeeded)
+{
+    <div class="alert alert-danger">
+        <h3>Доступ запрещен</h3>
+        <p>У вас нет прав для удаления сеансов.</p>
+        <a href="@Url.Action("Index", "Booking")" class="btn btn-primary">Вернуться к списку сеансов</a>
+    </div>
+    return;
+}
+
 <h2>Удаление сеанса</h2>
 
 <p>Вы действительно хотите удалить сеанс "<strong>@Model.SlotDate.ToString("dd/MM/yyyy HH:mm")</strong>"?</p>
+
+@if (!Model.IsAvailable)
+{
+    <div class="alert alert-warning">
+        <strong>Внимание!</strong> Этот сеанс забронирован клиентом: @Model.ClientName (@Model.PhoneNumber)
+    </div>
+}
 
 <form asp-action="Delete" method="post">
     <input type="hidden" asp-for="Id" />

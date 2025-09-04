@@ -1,20 +1,46 @@
 ﻿@model FMassage.Models.Booking
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Редактирование сеанса";
 }
 
+@if (!(await AuthorizationService.AuthorizeAsync(User, "RequireAdminRole")).Succeeded)
+{
+    <div class="alert alert-danger">
+        <h3>Доступ запрещен</h3>
+        <p>У вас нет прав для редактирования сеансов.</p>
+        <a href="@Url.Action("Index", "Booking")" class="btn btn-primary">Вернуться к списку сеансов</a>
+    </div>
+    return;
+}
+
 <h2>Редактирование сеанса</h2>
+
+@if (!Model.IsAvailable)
+{
+    <div class="alert alert-info">
+        <strong>Информация:</strong> Этот сеанс забронирован клиентом: @Model.ClientName (@Model.PhoneNumber)
+        <br>Комментарий: @(string.IsNullOrEmpty(Model.Comment) ? "нет" : Model.Comment)
+    </div>
+}
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
+
     <div class="mb-3">
         <label for="SlotDate" class="form-label">Дата и время сеанса:</label>
-        <input type="datetime-local" class="form-control" id="SlotDate" name="SlotDate" value="@Model.SlotDate.ToString("yyyy-MM-ddTHH:mm:ss")" required />
+        <input type="datetime-local" class="form-control" id="SlotDate" name="slotDate"
+               value="@Model.SlotDate.ToString("yyyy-MM-ddTHH:mm")" required />
     </div>
+
     <div class="mb-3">
         <label for="Duration" class="form-label">Продолжительность сеанса (минуты):</label>
-        <input type="number" class="form-control" id="Duration" name="DurationInMinutes" value="@Model.Duration.TotalMinutes" required />
+        <input type="number" class="form-control" id="Duration" name="durationInMinutes"
+               value="@Model.Duration.TotalMinutes" min="1" required />
     </div>
+
     <button type="submit" class="btn btn-success">Сохранить изменения</button>
+    <a href="@Url.Action("Index", "Booking")" class="btn btn-secondary">Отмена</a>
 </form>

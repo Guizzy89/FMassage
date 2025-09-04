@@ -1,0 +1,88 @@
+﻿@model IEnumerable<FMassage.Models.Booking>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Мои бронирования";
+}
+
+<h2>Мои бронирования</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <h4>У вас пока нет бронирований</h4>
+        <p>Перейдите к <a href="@Url.Action("Index", "Booking")" class="alert-link">списку сеансов</a> чтобы забронировать подходящее время.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Дата и время</th>
+                    <th>Продолжительность</th>
+                    <th>Статус</th>
+                    <th>Ваше имя</th>
+                    <th>Телефон</th>
+                    <th>Комментарий</th>
+                    <th>Дата бронирования</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderByDescending(b => b.SlotDate))
+                {
+                    <tr>
+                        <td>@item.SlotDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.Duration.Minutes мин.</td>
+                        <td>
+                            @if (item.SlotDate > DateTime.Now)
+                            {
+                                <span class="badge bg-success">Активно</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Завершено</span>
+                            }
+                        </td>
+                        <td>@item.ClientName</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@(string.IsNullOrEmpty(item.Comment) ? "—" : item.Comment)</td>
+                        <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-3">
+        <div class="alert alert-info">
+            <strong>Всего бронирований:</strong> @Model.Count()<br>
+            <strong>Предстоящих:</strong> @Model.Count(b => b.SlotDate > DateTime.Now)<br>
+            <strong>Завершенных:</strong> @Model.Count(b => b.SlotDate <= DateTime.Now)
+        </div>
+    </div>
+}
+
+<div class="mt-4">
+    <a href="@Url.Action("Index", "Booking")" class="btn btn-primary">
+        ← Вернуться к списку сеансов
+    </a>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a href="@Url.Action("Index", "Booking")" class="btn btn-outline-secondary ms-2">
+            📋 Панель администратора
+        </a>
+    }
+</div>
+
+<style>
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .badge {
+        font-size: 0.85em;
+    }
+</style>

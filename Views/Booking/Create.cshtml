@@ -1,7 +1,19 @@
 ﻿@model FMassage.Models.Booking
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Добавление нового сеанса";
+}
+
+@if (!(await AuthorizationService.AuthorizeAsync(User, "RequireAdminRole")).Succeeded)
+{
+    <div class="alert alert-danger">
+        <h3>Доступ запрещен</h3>
+        <p>У вас нет прав для добавления новых сеансов.</p>
+        <a href="@Url.Action("Index", "Booking")" class="btn btn-primary">Вернуться к списку сеансов</a>
+    </div>
+    return;
 }
 
 <h2>Добавление нового сеанса</h2>
@@ -9,11 +21,12 @@
 <form asp-action="Create" method="post">
     <div class="mb-3">
         <label for="SlotDate" class="form-label">Дата и время сеанса:</label>
-        <input type="datetime-local" class="form-control" id="SlotDate" name="SlotDate" required />
+        <input type="datetime-local" class="form-control" id="SlotDate" name="slotDate" required />
     </div>
     <div class="mb-3">
         <label for="Duration" class="form-label">Продолжительность сеанса (минуты):</label>
-        <input type="number" class="form-control" id="Duration" name="DurationInMinutes" required />
+        <input type="number" class="form-control" id="Duration" name="durationInMinutes" min="1" required />
     </div>
     <button type="submit" class="btn btn-success">Добавить сеанс</button>
+    <a href="@Url.Action("Index", "Booking")" class="btn btn-secondary">Отмена</a>
 </form>

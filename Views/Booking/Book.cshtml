@@ -1,0 +1,57 @@
+﻿@model FMassage.Models.Booking
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Бронирование сеанса";
+}
+
+<h2>Бронирование сеанса</h2>
+
+@if (!Model.IsAvailable)
+{
+    <div class="alert alert-warning">
+        <h3>Сеанс недоступен</h3>
+        <p>Этот сеанс уже забронирован другим клиентом.</p>
+        <a href="@Url.Action("Index", "Booking")" class="btn btn-primary">Вернуться к списку сеансов</a>
+    </div>
+    return;
+}
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Информация о сеансе</h4>
+    </div>
+    <div class="card-body">
+        <p><strong>Дата и время:</strong> @Model.SlotDate.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Продолжительность:</strong> @Model.Duration.Minutes минут</p>
+    </div>
+</div>
+
+<form asp-action="Book" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label for="ClientName" class="form-label">Ваше имя:</label>
+        <input type="text" class="form-control" id="ClientName" name="clientName"
+               required maxlength="100" placeholder="Введите ваше имя" />
+    </div>
+
+    <div class="mb-3">
+        <label for="PhoneNumber" class="form-label">Телефон для связи:</label>
+        <input type="tel" class="form-control" id="PhoneNumber" name="phoneNumber"
+               required placeholder="+7 (XXX) XXX-XX-XX" />
+        <div class="form-text">Формат: +7 (XXX) XXX-XX-XX</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="Comment" class="form-label">Комментарий (необязательно):</label>
+        <textarea class="form-control" id="Comment" name="comment"
+                  rows="3" placeholder="Дополнительные пожелания или информация"></textarea>
+    </div>
+
+    <div class="alert alert-info">
+        <strong>Важно:</strong> После бронирования сеанс будет закреплен за вами и станет недоступен для других клиентов.
+    </div>
+
+    <button type="submit" class="btn btn-success">Подтвердить бронирование</button>
+    <a href="@Url.Action("Index", "Booking")" class="btn btn-secondary">Отмена</a>
+</form>

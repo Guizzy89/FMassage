@@ -10,7 +10,20 @@ namespace FMassage.Data
             : base(options)
         {
         }
+
         public DbSet<Massage> Massages { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            // Настраиваем связь между Booking и User
+            builder.Entity<Booking>()
+                .HasOne(b => b.User)
+                .WithMany(u => u.Bookings)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

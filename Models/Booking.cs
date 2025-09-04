@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Identity;
 
 namespace FMassage.Models
 {
@@ -24,9 +23,10 @@ namespace FMassage.Models
 
         // Связь с пользователем, который забронировал
         public string? UserId { get; set; }
-        public IdentityUser? User { get; set; }
 
-        // Дата создания брони
+        [ForeignKey("UserId")]
+        public virtual User? User { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
