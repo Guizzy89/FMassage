@@ -1,11 +1,17 @@
 ﻿@model IEnumerable<FMassage.Models.Massage>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Список услуг массажа";
 }
 
 <h2>Список услуг массажа</h2>
-<a href="@Url.Action("Create", "Massage")" class="btn btn-info mb-3">Добавить новую услугу</a>
+
+@if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdminRole")).Succeeded)
+{
+    <a href="@Url.Action("Create", "Massage")" class="btn btn-info mb-3">Добавить новую услугу</a>
+}
 
 <table class="table table-bordered">
     <thead>
@@ -13,7 +19,10 @@
             <th>Название</th>
             <th>Описание</th>
             <th>Цена</th>
-            <th>Действия</th>
+            @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdminRole")).Succeeded)
+            {
+                <th>Действия</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -23,10 +32,13 @@
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
                 <td>@Html.DisplayFor(modelItem => item.Price)</td>
-                <td>
-                    <a href="@Url.Action("Edit", "Massage", new { id = item.Id })" class="btn btn-warning">Редактировать</a>
-                    <a href="@Url.Action("Delete", "Massage", new { id = item.Id })" onclick="return confirm('Вы действительно хотите удалить данную услугу?');" class="btn btn-danger">Удалить</a>
-                </td>
+                @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdminRole")).Succeeded)
+                {
+                    <td>
+                        <a href="@Url.Action("Edit", "Massage", new { id = item.Id })" class="btn btn-warning">Редактировать</a>
+                        <a href="@Url.Action("Delete", "Massage", new { id = item.Id })" onclick="return confirm('Вы действительно хотите удалить данную услугу?');" class="btn btn-danger">Удалить</a>
+                    </td>
+                }
             </tr>
         }
     </tbody>

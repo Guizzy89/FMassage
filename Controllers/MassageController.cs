@@ -1,5 +1,6 @@
 ﻿using FMassage.Data;
 using FMassage.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -15,22 +16,24 @@ namespace FMassage.Controllers
             _context = context;
         }
 
-        // Индексная страница для вывода списка услуг (GET-запрос)
+        // Индексная страница для вывода списка услуг (GET-запрос) - доступно всем
         public async Task<IActionResult> Index()
         {
             var services = await _context.Massages.ToListAsync();
             return View(services);
         }
 
-        // Открытие формы для создания новой услуги (GET-запрос)
+        // Открытие формы для создания новой услуги (GET-запрос) - только для Admin
         [HttpGet]
+        [Authorize(Policy = "RequireAdminRole")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // Сохранение новой услуги (POST-запрос)
+        // Сохранение новой услуги (POST-запрос) - только для Admin
         [HttpPost]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Create(Massage massage)
         {
             if (ModelState.IsValid)
@@ -42,8 +45,9 @@ namespace FMassage.Controllers
             return View(massage);
         }
 
-        // Редактирование существующей услуги (GET-запрос)
+        // Редактирование существующей услуги (GET-запрос) - только для Admin
         [HttpGet]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Edit(int id)
         {
             var service = await _context.Massages.FindAsync(id);
@@ -54,8 +58,9 @@ namespace FMassage.Controllers
             return View(service);
         }
 
-        // Обработка изменений (POST-запрос)
+        // Обработка изменений (POST-запрос) - только для Admin
         [HttpPost]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Edit(int id, Massage massage)
         {
             if (id != massage.Id)
@@ -79,8 +84,9 @@ namespace FMassage.Controllers
             return View(massage);
         }
 
-        // Форма для удаления услуги (GET-запрос)
+        // Форма для удаления услуги (GET-запрос) - только для Admin
         [HttpGet]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Delete(int id)
         {
             var service = await _context.Massages.FindAsync(id);
@@ -91,8 +97,9 @@ namespace FMassage.Controllers
             return View(service);
         }
 
-        // Обработка удаления (POST-запрос)
+        // Обработка удаления (POST-запрос) - только для Admin
         [HttpPost, ActionName("Delete")]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var service = await _context.Massages.FindAsync(id);
