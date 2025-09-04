@@ -45,9 +45,43 @@
         .btn:hover {
             transform: scale(1.05);
         }
+
+        /* Стили для информации о пользователе */
+        .user-info {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .user-status {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .user-name {
+            color: #007bff;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <!-- Блок информации о пользователе -->
+    <div class="user-info">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="user-status">Вы вошли как:</div>
+            <div class="user-name">@User.Identity.Name</div>
+        }
+        else
+        {
+            <div class="user-status">Вы не авторизованы</div>
+        }
+    </div>
+
     <h1>Кабинет массажа</h1>
     <p>Профессиональный уход и забота о вашем здоровье.</p>
 
