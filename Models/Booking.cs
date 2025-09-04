@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace FMassage.Models
 {
@@ -6,25 +8,25 @@ namespace FMassage.Models
     {
         public int Id { get; set; }
 
-        // Дата и время слота
         [DataType(DataType.DateTime)]
         public DateTime SlotDate { get; set; }
 
-        // Длительность сеанса
         public TimeSpan Duration { get; set; }
-
-        // Доступность слота
         public bool IsAvailable { get; set; } = true;
 
-        // Имя клиента
         [StringLength(100)]
         public string ClientName { get; set; } = "";
 
-        // Телефон клиента
         [Phone]
         public string PhoneNumber { get; set; } = "";
 
-        // Комментарий клиента
         public string Comment { get; set; } = "";
+
+        // Связь с пользователем, который забронировал
+        public string? UserId { get; set; }
+        public IdentityUser? User { get; set; }
+
+        // Дата создания брони
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
