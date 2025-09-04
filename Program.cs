@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Добавляем сервисы контроллеров и представлений
+builder.Services.AddControllersWithViews();
+
+// Добавляем сервисы Razor Pages
+builder.Services.AddRazorPages();
+
 // Добавляем поддержку базы данных SQLite
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=FMassage.db"));
@@ -23,6 +29,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+
+// Добавляем сервисы авторизации
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
