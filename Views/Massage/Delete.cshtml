@@ -1,7 +1,19 @@
 ﻿@model FMassage.Models.Massage
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Подтверждение удаления услуги";
+}
+
+@if (!(await AuthorizationService.AuthorizeAsync(User, "RequireAdminRole")).Succeeded)
+{
+    <div class="alert alert-danger">
+        <h3>Доступ запрещен</h3>
+        <p>У вас нет прав для удаления услуг.</p>
+        <a href="@Url.Action("Index", "Massage")" class="btn btn-primary">Вернуться к списку услуг</a>
+    </div>
+    return;
 }
 
 <h2>Удаление услуги</h2>
